@@ -13,24 +13,37 @@
 #include <math.h>
 #include <time.h>
 
+// Prototype des fonctions
 void err(char *s);
 
 void delai ( int secondes);
 
+// Fonction principale
 int main(int argc, char** argv)
 {
     if(argc<4 || (argc>4 && argc<6) || argc>6)
     {
         printf("\nSyntaxe du programme : %s ",argv[0]);
-        if (argc < 6)
-        {
-            printf("<Adresse IP du serveur> <Port> <Commande AT>\n\n");
-        }
-        else
-        {
-            printf("<Adresse IP du serveur> <Port> <Commande AT N°1> <Commande AT N°2> <Delai>\n\n");
-        }
+        printf("<Adresse IP du serveur> <Port> <Commande AT>\n");
+        printf("\nSyntaxe alternative :%s ",argv[0]);
+        printf("<Adresse IP du serveur> <Port> <Commande AT N°1> <Delai> <Commande AT N°2>\n\n");
         exit(0);
+    }
+    
+    FILE *fichier = NULL;
+    char nomDuFichier[]="Notes.txt";
+    fichier = fopen (nomDuFichier,"a");
+    
+    time_t now = time (NULL);
+    struct tm tm_now = *localtime (&now);
+    char s_now[sizeof "JJ/MM/AAAA HH:MM:SS"];
+    strftime (s_now, sizeof s_now, "%d/%m/%Y %H:%M:%S", &tm_now);
+    
+    fprintf(fichier,"\n\n%s\n",s_now);
+    
+    if (fichier == NULL)
+    {
+        printf("Ouverture du fichier %s impossible !\n",nomDuFichier);
     }
     
     int p, port = 0;
@@ -57,6 +70,11 @@ int main(int argc, char** argv)
     
     printf("\nAdresse du serveur distant : %s:%d\n",argv[1],port);
     
+    if (fichier != NULL)
+    {
+        fprintf(fichier,"Adresse du serveur distant : %s:%d\n",argv[1],port);
+    }
+    
     if (argc==4)
     {
         int longueur1 = strlen ( argv[3] );
@@ -70,9 +88,17 @@ int main(int argc, char** argv)
         commandeAT1[longueur1+1]='\0';
         
         printf("Commande AT : %s\n\n",commandeAT1);
+        if (fichier != NULL)
+        {
+            fprintf(fichier,"Commande AT : %s\n",commandeAT1);
+        }
         
         if (sendto(sockfd, commandeAT1, longueur1+2, 0, (struct sockaddr*)&serv_addr, slen)==-1)
         {
+            if (fichier != NULL)
+            {
+                fprintf(fichier,"ERREUR : Envoi du paquet UDP impossible.\n");
+            }
             err("sendto()");
         }
         
@@ -91,30 +117,40 @@ int main(int argc, char** argv)
         commandeAT1[longueur1]='\r';
         commandeAT1[longueur1+1]='\0';
         
-        int longueur2 = strlen ( argv[4] );
+        int longueur2 = strlen ( argv[5] );
         char *commandeAT2 = malloc((( longueur2 + 2 ) * sizeof ( char )));
         int n ;
         for (n = 0 ; n < longueur2 ; n ++ )
         {
-            commandeAT2[n] = argv[4][n];
+            commandeAT2[n] = argv[5][n];
         }
         commandeAT2[longueur2]='\r';
         commandeAT2[longueur2+1]='\0';
         
         int delaiSecondes = 0;
         int k ;
-        int compteur2 = strlen ( argv[5] );
+        int compteur2 = strlen ( argv[4] );
         for(k=0;k<compteur2;k++)
         {
-            delaiSecondes=delaiSecondes+(argv[5][k]-48)*pow(10,compteur2-(k+1));
+            delaiSecondes=delaiSecondes+(argv[4][k]-48)*pow(10,compteur2-(k+1));
         }
         
         printf("Commande AT N°1 : %s\n",commandeAT1);
         printf("Commande AT N°2 : %s\n",commandeAT2);
         printf("Delai : %d secondes\n\n",delaiSecondes);
+        if (fichier != NULL)
+        {
+            fprintf(fichier,"Commande AT N°1 : %s\n",commandeAT1);
+            fprintf(fichier,"Commande AT N°2 : %s\n",commandeAT2);
+            fprintf(fichier,"Delai : %d secondes\n",delaiSecondes);
+        }
         
         if (sendto(sockfd, commandeAT1, longueur1+2, 0, (struct sockaddr*)&serv_addr, slen)==-1)
         {
+            if (fichier != NULL)
+            {
+                fprintf(fichier,"ERREUR : Envoi du paquet UDP impossible.\n");
+            }
             err("sendto()");
         }
         
@@ -122,16 +158,22 @@ int main(int argc, char** argv)
         
         if (sendto(sockfd, commandeAT2, longueur2+2, 0, (struct sockaddr*)&serv_addr, slen)==-1)
         {
+            if (fichier != NULL)
+            {
+                fprintf(fichier,"ERREUR : Envoi du paquet UDP impossible.\n");
+            }
             err("sendto()");
         }
         
         close(sockfd);
         free(commandeAT1);
         free(commandeAT2);
+        fclose(fichier);
     }
     return 0;
 }
 
+// Définition des fonctions
 void err(char *s)
 {
     perror(s);
