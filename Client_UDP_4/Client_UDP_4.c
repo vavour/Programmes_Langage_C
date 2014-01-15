@@ -24,9 +24,19 @@ int main(int argc, char** argv)
     if(argc<4 || (argc>4 && argc<6) || argc>6)
     {
         printf("\nSyntaxe du programme : %s ",argv[0]);
-        printf("<Adresse IP du serveur> <Port> <Commande AT>\n");
+        printf("<Adresse IP du serveur> <Port> ");
+        printf("\033[%sm","31");
+        printf("<Commande AT>\n");
+        printf("\033[%sm","0");
         printf("\nSyntaxe alternative :%s ",argv[0]);
-        printf("<Adresse IP du serveur> <Port> <Commande AT N°1> <Delai> <Commande AT N°2>\n\n");
+        printf("<Adresse IP du serveur> <Port> ");
+        printf("\033[%sm","31");
+        printf("<Commande AT N°1> ");
+        printf("\033[%sm","0");
+        printf("<Delai> ");
+        printf("\033[%sm","31");
+        printf("<Commande AT N°2>\n\n");
+        printf("\033[%sm","0");
         exit(0);
     }
     
@@ -43,7 +53,9 @@ int main(int argc, char** argv)
     
     if (fichier == NULL)
     {
+        printf("\033[%sm","31");
         printf("Ouverture du fichier %s impossible !\n",nomDuFichier);
+        printf("\033[%sm","0");
     }
     
     int p, port = 0;
@@ -87,7 +99,9 @@ int main(int argc, char** argv)
         commandeAT1[longueur1]='\r';
         commandeAT1[longueur1+1]='\0';
         
+        printf("\033[%sm","31");
         printf("Commande AT : %s\n\n",commandeAT1);
+        printf("\033[%sm","0");
         if (fichier != NULL)
         {
             fprintf(fichier,"Commande AT : %s\n",commandeAT1);
@@ -135,8 +149,14 @@ int main(int argc, char** argv)
             delaiSecondes=delaiSecondes+(argv[4][k]-48)*pow(10,compteur2-(k+1));
         }
         
-        printf("Commande AT N°1 : %s\n",commandeAT1);
-        printf("Commande AT N°2 : %s\n",commandeAT2);
+        printf("Commande AT N°1 :");
+        printf("\033[%sm","31");
+        printf(" %s\n",commandeAT1);
+        printf("\033[%sm","0");
+        printf("Commande AT N°2 :");
+        printf("\033[%sm","31");
+        printf(" %s\n",commandeAT2);
+        printf("\033[%sm","0");
         printf("Delai : %d secondes\n\n",delaiSecondes);
         if (fichier != NULL)
         {
