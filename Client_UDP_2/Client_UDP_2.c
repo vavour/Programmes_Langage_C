@@ -1,6 +1,7 @@
 // Client UDP
 // Pierre PELE
 // Paul-Darius SARMADI
+// Upsilonaudio.com
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -28,7 +29,7 @@ int main(int argc, char** argv)
         printf("\033[%sm","31");
         printf("<Commande AT>\n");
         printf("\033[%sm","0");
-        printf("\nSyntaxe alternative :%s ",argv[0]);
+        printf("\nSyntaxe alternative : %s ",argv[0]);
         printf("<Adresse IP du serveur> <Port> ");
         printf("\033[%sm","31");
         printf("<Commande AT N°1> ");
