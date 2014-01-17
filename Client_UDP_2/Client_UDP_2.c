@@ -100,8 +100,9 @@ int main(int argc, char** argv)
         commandeAT1[longueur1]='\r';
         commandeAT1[longueur1+1]='\0';
         
+        printf("Commande AT : ");
         printf("\033[%sm","31");
-        printf("Commande AT : %s\n\n",commandeAT1);
+        printf("%s\n\n",commandeAT1);
         printf("\033[%sm","0");
         if (fichier != NULL)
         {
@@ -203,7 +204,6 @@ void err(char *s)
 
 void delai ( int delaiSecondes )
 {
-    clock_t delai1;
     while ( clock()/CLOCKS_PER_SEC < delaiSecondes)
     {
     }
