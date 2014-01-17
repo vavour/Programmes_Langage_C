@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 
     if (sendto(sockfd, MESSAGE, BUFLEN, 0, (struct sockaddr*)&serv_addr, slen)==-1)
     {
-            err("sendto()");
+        err("sendto()");
     }
 
     close(sockfd);
