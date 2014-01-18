@@ -91,6 +91,21 @@ int main(int argc, char** argv)
     if (argc==4)
     {
         int longueur1 = strlen ( argv[3] );
+        
+        if (longueur1 > 1024)
+        {
+            printf("\033[%sm","31");
+            printf("\nERREUR : ");
+            printf("\033[%sm","0");
+            printf("Taille du paquet incorrecte.\n\n");
+            
+            if (fichier != NULL)
+            {
+                fprintf(fichier,"ERREUR : Taille du paquet incorrecte.\n");
+            }
+            exit(0);
+        }
+        
         char *commandeAT1 = malloc((( longueur1 + 2 ) * sizeof ( char )));
         int z ;
         for (z = 0 ; z < longueur1 ; z ++ )
@@ -124,6 +139,21 @@ int main(int argc, char** argv)
     else
     {
         int longueur1 = strlen ( argv[3] );
+        
+        if (longueur1 > 1024)
+        {
+            printf("\033[%sm","31");
+            printf("ERREUR : ");
+            printf("\033[%sm","0");
+            printf("Taille du paquet incorrecte.\n\n");
+            
+            if (fichier != NULL)
+            {
+                fprintf(fichier,"ERREUR : Taille du paquet incorrecte.\n");
+            }
+            exit(0);
+        }
+        
         char *commandeAT1 = malloc((( longueur1 + 2 ) * sizeof ( char )));
         int z ;
         for (z = 0 ; z < longueur1 ; z ++ )
@@ -134,6 +164,21 @@ int main(int argc, char** argv)
         commandeAT1[longueur1+1]='\0';
         
         int longueur2 = strlen ( argv[5] );
+        
+        if (longueur2 > 1024)
+        {
+            printf("\033[%sm","31");
+            printf("ERREUR : ");
+            printf("\033[%sm","0");
+            printf("Taille du paquet incorrecte.\n\n");
+            
+            if (fichier != NULL)
+            {
+                fprintf(fichier,"ERREUR : Taille du paquet incorrecte.\n");
+            }
+            exit(0);
+        }
+        
         char *commandeAT2 = malloc((( longueur2 + 2 ) * sizeof ( char )));
         int n ;
         for (n = 0 ; n < longueur2 ; n ++ )
@@ -160,6 +205,7 @@ int main(int argc, char** argv)
         printf(" %s\n",commandeAT2);
         printf("\033[%sm","0");
         printf("Delai : %d secondes\n\n",delaiSecondes);
+        
         if (fichier != NULL)
         {
             fprintf(fichier,"Commande AT N°1 : %s\n",commandeAT1);
