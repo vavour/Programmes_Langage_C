@@ -40,7 +40,6 @@ int main(int argc, char** argv)
         printf("\033[%sm","0");
         exit(0);
     }
-    
     FILE *fichier = NULL;
     char nomDuFichier[]="Notes.txt";
     fichier = fopen (nomDuFichier,"a");
@@ -63,7 +62,22 @@ int main(int argc, char** argv)
     int compteur1 = strlen ( argv[2] );
     for(p=0;p<compteur1;p++)
     {
-        port=port+(argv[2][p]-48)*pow(10,compteur1-(p+1));
+        if (argv[2][p]-'0' >= 0 && argv[2][p]-'0' <= 9)
+        {
+            port=port+(argv[2][p]-'0')*pow(10,compteur1-(p+1));
+        }
+        else
+        {
+            printf("\033[%sm","31");
+            printf("\nERREUR : ");
+            printf("\033[%sm","0");
+            printf("Port incorrect\n\n");
+            if (fichier != NULL)
+            {
+                fprintf(fichier,"ERREUR : Port incorrect\n");
+            }
+            exit(0);
+        }
     }
     
     struct sockaddr_in serv_addr;
@@ -92,16 +106,16 @@ int main(int argc, char** argv)
     {
         int longueur1 = strlen ( argv[3] );
         
-        if (longueur1 > 1024)
+        if (longueur1 >= 1024)
         {
             printf("\033[%sm","31");
             printf("\nERREUR : ");
             printf("\033[%sm","0");
-            printf("Taille du paquet incorrecte.\n\n");
+            printf("Taille du paquet incorrecte\n\n");
             
             if (fichier != NULL)
             {
-                fprintf(fichier,"ERREUR : Taille du paquet incorrecte.\n");
+                fprintf(fichier,"ERREUR : Taille du paquet incorrecte\n");
             }
             exit(0);
         }
@@ -128,7 +142,7 @@ int main(int argc, char** argv)
         {
             if (fichier != NULL)
             {
-                fprintf(fichier,"ERREUR : Envoi du paquet UDP impossible.\n");
+                fprintf(fichier,"ERREUR : Envoi du paquet UDP impossible\n");
             }
             err("sendto()");
         }
@@ -140,16 +154,16 @@ int main(int argc, char** argv)
     {
         int longueur1 = strlen ( argv[3] );
         
-        if (longueur1 > 1024)
+        if (longueur1 >= 1024)
         {
             printf("\033[%sm","31");
             printf("ERREUR : ");
             printf("\033[%sm","0");
-            printf("Taille du paquet incorrecte.\n\n");
+            printf("Taille du paquet incorrecte\n\n");
             
             if (fichier != NULL)
             {
-                fprintf(fichier,"ERREUR : Taille du paquet incorrecte.\n");
+                fprintf(fichier,"ERREUR : Taille du paquet incorrecte\n");
             }
             exit(0);
         }
@@ -165,16 +179,16 @@ int main(int argc, char** argv)
         
         int longueur2 = strlen ( argv[5] );
         
-        if (longueur2 > 1024)
+        if (longueur2 >= 1024)
         {
             printf("\033[%sm","31");
             printf("ERREUR : ");
             printf("\033[%sm","0");
-            printf("Taille du paquet incorrecte.\n\n");
+            printf("Taille du paquet incorrecte\n\n");
             
             if (fichier != NULL)
             {
-                fprintf(fichier,"ERREUR : Taille du paquet incorrecte.\n");
+                fprintf(fichier,"ERREUR : Taille du paquet incorrecte\n");
             }
             exit(0);
         }
@@ -193,7 +207,22 @@ int main(int argc, char** argv)
         int compteur2 = strlen ( argv[4] );
         for(k=0;k<compteur2;k++)
         {
-            delaiSecondes=delaiSecondes+(argv[4][k]-48)*pow(10,compteur2-(k+1));
+            if (argv[4][k]-'0' >= 0 && argv[4][k]-'0' <= 9)
+            {
+                delaiSecondes=delaiSecondes+(argv[4][k]-'0')*pow(10,compteur2-(k+1));
+            }
+            else
+            {
+                printf("\033[%sm","31");
+                printf("\nERREUR : ");
+                printf("\033[%sm","0");
+                printf("Delai incorrect\n\n");
+                if (fichier != NULL)
+                {
+                    fprintf(fichier,"ERREUR : Delai incorrect\n");
+                }
+                exit(0);
+            }
         }
         
         printf("Commande AT N°1 :");
@@ -217,7 +246,7 @@ int main(int argc, char** argv)
         {
             if (fichier != NULL)
             {
-                fprintf(fichier,"ERREUR : Envoi du paquet UDP impossible.\n");
+                fprintf(fichier,"ERREUR : Envoi du paquet UDP impossible\n");
             }
             err("sendto()");
         }
@@ -228,7 +257,7 @@ int main(int argc, char** argv)
         {
             if (fichier != NULL)
             {
-                fprintf(fichier,"ERREUR : Envoi du paquet UDP impossible.\n");
+                fprintf(fichier,"ERREUR : Envoi du paquet UDP impossible\n");
             }
             err("sendto()");
         }
