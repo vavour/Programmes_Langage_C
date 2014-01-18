@@ -43,21 +43,17 @@ int main(int argc, char** argv)
     FILE *fichier = NULL;
     char nomDuFichier[]="Notes.txt";
     fichier = fopen (nomDuFichier,"a");
-    
     time_t now = time (NULL);
     struct tm tm_now = *localtime (&now);
     char s_now[sizeof "JJ/MM/AAAA HH:MM:SS"];
     strftime (s_now, sizeof s_now, "%d/%m/%Y %H:%M:%S", &tm_now);
-    
     fprintf(fichier,"\n\n%s\n",s_now);
-    
     if (fichier == NULL)
     {
         printf("\033[%sm","31");
         printf("Ouverture du fichier %s impossible !\n",nomDuFichier);
         printf("\033[%sm","0");
     }
-    
     int p, port = 0;
     int compteur1 = strlen ( argv[2] );
     for(p=0;p<compteur1;p++)
@@ -79,13 +75,12 @@ int main(int argc, char** argv)
             exit(0);
         }
     }
-    
     struct sockaddr_in serv_addr;
     int sockfd, i, slen=sizeof(serv_addr);
-    
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))==-1)
+    {
         err("socket");
-    
+    }
     bzero(&serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
@@ -94,32 +89,26 @@ int main(int argc, char** argv)
         fprintf(stderr, "inet_aton() failed\n");
         exit(1);
     }
-    
     printf("\nAdresse du serveur distant : %s:%d\n",argv[1],port);
-    
     if (fichier != NULL)
     {
         fprintf(fichier,"Adresse du serveur distant : %s:%d\n",argv[1],port);
     }
-    
     if (argc==4)
     {
         int longueur1 = strlen ( argv[3] );
-        
         if (longueur1 >= 1024)
         {
             printf("\033[%sm","31");
             printf("\nERREUR : ");
             printf("\033[%sm","0");
             printf("Taille du paquet incorrecte\n\n");
-            
             if (fichier != NULL)
             {
                 fprintf(fichier,"ERREUR : Taille du paquet incorrecte\n");
             }
             exit(0);
         }
-        
         char *commandeAT1 = malloc((( longueur1 + 2 ) * sizeof ( char )));
         int z ;
         for (z = 0 ; z < longueur1 ; z ++ )
@@ -128,7 +117,6 @@ int main(int argc, char** argv)
         }
         commandeAT1[longueur1]='\r';
         commandeAT1[longueur1+1]='\0';
-        
         printf("Commande AT : ");
         printf("\033[%sm","31");
         printf("%s\n\n",commandeAT1);
@@ -137,7 +125,6 @@ int main(int argc, char** argv)
         {
             fprintf(fichier,"Commande AT : %s\n",commandeAT1);
         }
-        
         if (sendto(sockfd, commandeAT1, longueur1+2, 0, (struct sockaddr*)&serv_addr, slen)==-1)
         {
             if (fichier != NULL)
@@ -146,28 +133,24 @@ int main(int argc, char** argv)
             }
             err("sendto()");
         }
-        
         close(sockfd);
         free(commandeAT1);
     }
     else
     {
         int longueur1 = strlen ( argv[3] );
-        
         if (longueur1 >= 1024)
         {
             printf("\033[%sm","31");
             printf("ERREUR : ");
             printf("\033[%sm","0");
             printf("Taille du paquet incorrecte\n\n");
-            
             if (fichier != NULL)
             {
                 fprintf(fichier,"ERREUR : Taille du paquet incorrecte\n");
             }
             exit(0);
         }
-        
         char *commandeAT1 = malloc((( longueur1 + 2 ) * sizeof ( char )));
         int z ;
         for (z = 0 ; z < longueur1 ; z ++ )
@@ -176,23 +159,19 @@ int main(int argc, char** argv)
         }
         commandeAT1[longueur1]='\r';
         commandeAT1[longueur1+1]='\0';
-        
         int longueur2 = strlen ( argv[5] );
-        
         if (longueur2 >= 1024)
         {
             printf("\033[%sm","31");
             printf("ERREUR : ");
             printf("\033[%sm","0");
             printf("Taille du paquet incorrecte\n\n");
-            
             if (fichier != NULL)
             {
                 fprintf(fichier,"ERREUR : Taille du paquet incorrecte\n");
             }
             exit(0);
         }
-        
         char *commandeAT2 = malloc((( longueur2 + 2 ) * sizeof ( char )));
         int n ;
         for (n = 0 ; n < longueur2 ; n ++ )
@@ -201,7 +180,6 @@ int main(int argc, char** argv)
         }
         commandeAT2[longueur2]='\r';
         commandeAT2[longueur2+1]='\0';
-        
         int delaiSecondes = 0;
         int k ;
         int compteur2 = strlen ( argv[4] );
@@ -224,7 +202,6 @@ int main(int argc, char** argv)
                 exit(0);
             }
         }
-        
         printf("Commande AT N°1 :");
         printf("\033[%sm","31");
         printf(" %s\n",commandeAT1);
@@ -234,14 +211,12 @@ int main(int argc, char** argv)
         printf(" %s\n",commandeAT2);
         printf("\033[%sm","0");
         printf("Delai : %d secondes\n\n",delaiSecondes);
-        
         if (fichier != NULL)
         {
             fprintf(fichier,"Commande AT N°1 : %s\n",commandeAT1);
             fprintf(fichier,"Commande AT N°2 : %s\n",commandeAT2);
             fprintf(fichier,"Delai : %d secondes\n",delaiSecondes);
         }
-        
         if (sendto(sockfd, commandeAT1, longueur1+2, 0, (struct sockaddr*)&serv_addr, slen)==-1)
         {
             if (fichier != NULL)
@@ -250,9 +225,7 @@ int main(int argc, char** argv)
             }
             err("sendto()");
         }
-        
         delai(delaiSecondes);
-        
         if (sendto(sockfd, commandeAT2, longueur2+2, 0, (struct sockaddr*)&serv_addr, slen)==-1)
         {
             if (fichier != NULL)
@@ -261,7 +234,6 @@ int main(int argc, char** argv)
             }
             err("sendto()");
         }
-        
         close(sockfd);
         free(commandeAT1);
         free(commandeAT2);
