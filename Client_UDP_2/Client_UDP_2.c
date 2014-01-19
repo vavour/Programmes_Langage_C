@@ -133,7 +133,6 @@ int main(int argc, char** argv)
             }
             err("sendto()");
         }
-        close(sockfd);
         free(commandeAT1);
     }
     else
@@ -234,11 +233,11 @@ int main(int argc, char** argv)
             }
             err("sendto()");
         }
-        close(sockfd);
         free(commandeAT1);
         free(commandeAT2);
-        fclose(fichier);
     }
+    close(sockfd);
+    fclose(fichier);
     return 0;
 }
 
