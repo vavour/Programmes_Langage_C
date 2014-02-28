@@ -1,6 +1,3 @@
-// Pour compiler ce programme :
-// $ gcc -o NFC_UID_Read NFC_UID_Read.c -lnfc
-
 #include <stdlib.h>
 #include <nfc/nfc.h>
 
